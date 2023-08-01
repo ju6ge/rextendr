@@ -127,15 +127,20 @@ register_extendr <- function(path = ".", quiet = FALSE, force = FALSE, compile =
 #' @noRd
 make_wrappers <- function(module_name, package_name, outfile,
                           path = ".", use_symbols = FALSE, quiet = FALSE) {
+  cli::cli_alert_info("2.1")
   wrapper_function <- glue("wrap__make_{module_name}_wrappers")
+  cli::cli_alert_info("2.2")
   x <- .Call(
     wrapper_function,
     use_symbols = use_symbols,
     package_name = package_name,
     PACKAGE = package_name
   )
+  cli::cli_alert_info("2.3")
   generated_wrappers <- stringi::stri_split_lines1(x)
+  cli::cli_alert_info("2.4")
 
+  cli::cli_alert_info("2.5")
   generated_wrappers <- c(
     generated_wrappers[1],
     "",
@@ -145,6 +150,7 @@ make_wrappers <- function(module_name, package_name, outfile,
     "",
     "# nolint end"
   )
+  cli::cli_alert_info("2.6")
 
   write_file(
     text = generated_wrappers,
@@ -152,6 +158,7 @@ make_wrappers <- function(module_name, package_name, outfile,
     search_root_from = path,
     quiet = quiet
   )
+  cli::cli_alert_info("2.7")
 }
 
 #' Creates R wrappers for Rust functions.
@@ -168,8 +175,10 @@ make_wrappers_externally <- function(module_name, package_name, outfile,
     cli::cli_alert_info("Loading library from: {library_path}.")
     # Loads native library
     lib <- dyn.load(library_path)
+    cli::cli_alert_info("1")
     # Registers library unloading to be invoked at the end of this function
     withr::defer(dyn.unload(lib[["path"]]))
+    cli::cli_alert_info("2")
 
     make_wrappers(
       module_name = module_name,
@@ -179,6 +188,7 @@ make_wrappers_externally <- function(module_name, package_name, outfile,
       use_symbols = use_symbols,
       quiet = quiet
     )
+    cli::cli_alert_info("3")
   }
 
   args <- list(
