@@ -165,6 +165,7 @@ make_wrappers_externally <- function(module_name, package_name, outfile,
                    module_name, package_name, outfile,
                    use_symbols, ...) {
     library_path <- file.path(path, "src", paste0(package_name, .Platform$dynlib.ext))
+    cli::cli_alert_info("Loading library from: {library_path}.")
     # Loads native library
     lib <- dyn.load(library_path)
     # Registers library unloading to be invoked at the end of this function
